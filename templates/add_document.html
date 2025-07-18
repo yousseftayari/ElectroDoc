@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Document</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #eef2f5;
+        margin: 0;
+        padding: 40px 20px;
+        color: #333;
+      }
+
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 30px;
+      }
+
+      form {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #34495e;
+        font-size: 14px;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 15px;
+        box-sizing: border-box;
+        transition: border-color 0.3s;
+      }
+
+      input[type="text"]:focus {
+        border-color: #28a745;
+        outline: none;
+      }
+
+      button[type="submit"] {
+        background-color: #28a745;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.3s ease;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #218838;
+      }
+
+      .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        padding: 10px 15px;
+        background-color: #7f8c8d;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        max-width: 200px;
+        margin-left: auto;
+        margin-right: auto;
+        transition: background-color 0.3s ease;
+      }
+
+      .back-link:hover {
+        background-color: #5a6268;
+      }
+
+      @media (max-width: 600px) {
+        form {
+          padding: 20px;
+        }
+
+        button[type="submit"],
+        .back-link {
+          font-size: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Add New Document</h1>
+
+    <form method="POST">
+      <label for="numero_dossier">Numéro Dossier</label>
+      <input type="text" id="numero_dossier" name="numero_dossier" required />
+
+      <label for="numero_carton">Numéro Carton</label>
+      <input type="text" id="numero_carton" name="numero_carton" required />
+
+      <label for="modele">Modèle</label>
+      <input type="text" id="modele" name="modele" required />
+
+      <label for="state">État</label>
+      <input type="text" id="state" name="state" required />
+
+      <button type="submit">Add Document</button>
+    </form>
+
+    <a href="{{ url_for('index') }}" class="back-link">← Back to List</a>
+  </body>
+</html>
