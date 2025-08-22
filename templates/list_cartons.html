@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Cartons du dossier {{ dossier.numero_dossier }}</title>
+</head>
+<body>
+    <h1>Cartons du dossier n°{{ dossier.numero_dossier }}</h1>
+    <ul>
+        {% for carton in cartons %}
+            <li>
+                Carton n°{{ carton.numero_carton }}
+                <!-- Lien vers la gestion des modèles/états à ajouter ici -->
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('list_dossiers') }}">Retour à la liste des dossiers</a>
+</body>
+</html>

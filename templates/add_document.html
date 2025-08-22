@@ -1,123 +1,183 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Add Document</title>
-    <style>
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #eef2f5;
-        margin: 0;
-        padding: 40px 20px;
-        color: #333;
+{% extends "base.html" %}
+
+{% block title %}ElectroDoc - Ajouter un Document{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title mb-0">
+          <i class="fas fa-plus-circle text-success"></i> Ajouter un Nouveau Document
+        </h4>
+      </div>
+      <div class="card-body">
+        <form method="POST" action="{{ url_for('add_document') }}">
+          <!-- Informations du document -->
+          <div class="row mb-4">
+            <div class="col-12">
+              <h5 class="text-primary mb-3">
+                <i class="fas fa-info-circle"></i> Informations du Document
+              </h5>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="numero_dossier" class="form-label">
+                <i class="fas fa-folder"></i> Numéro Dossier *
+              </label>
+              <input type="text" class="form-control" id="numero_dossier" name="numero_dossier" 
+                     required placeholder="Ex: Dossier001">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="numero_carton" class="form-label">
+                <i class="fas fa-box"></i> Numéro Carton *
+              </label>
+              <input type="text" class="form-control" id="numero_carton" name="numero_carton" 
+                     required placeholder="Ex: CartonA">
+            </div>
+
+            <div class="col-12 mb-3">
+              <label for="modele" class="form-label">
+                <i class="fas fa-microchip"></i> Modèle *
+              </label>
+              <input type="text" class="form-control" id="modele" name="modele" 
+                     required placeholder="Ex: ModelX">
+            </div>
+          </div>
+
+          <!-- États -->
+          <div class="row mb-4">
+            <div class="col-12">
+              <h5 class="text-primary mb-3">
+                <i class="fas fa-tags"></i> États du Modèle
+              </h5>
+              <div id="states-container">
+                <div class="state-row row mb-3">
+                  <div class="col-md-4">
+                    <label class="form-label">Type d'État</label>
+                    <select class="form-select state-type" name="etats" required>
+                      <option value="">Sélectionner un état</option>
+                      {% for etat in etats %}
+                        <option value="{{ etat.id }}">{{ etat.nom }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Quantité</label>
+                    <input type="number" class="form-control" name="quantities" value="1" min="1" required>
+                  </div>
+                  <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger btn-sm remove-state" style="display:none;">
+                      <i class="fas fa-trash"></i> Supprimer
+                    </button>
+                  </div>
+                  <!-- Sous-états BRK -->
+                  <div class="col-12 mt-2 sub-states-container" style="display:none;">
+                    <label class="form-label">Sous-états pour BRK :</label><br>
+                    <label><input type="checkbox" name="sub_states_0" value="KC"> KC</label>
+                    <label class="ms-3"><input type="checkbox" name="sub_states_0" value="Ill"> Ill</label>
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-outline-primary btn-sm" id="add-state-btn">
+                <i class="fas fa-plus"></i> Ajouter un État
+              </button>
+            </div>
+          </div>
+
+          <!-- Boutons -->
+          <div class="row">
+            <div class="col-12">
+              <hr>
+              <div class="d-flex justify-content-between">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                  <i class="fas fa-arrow-left"></i> Retour
+                </a>
+                <button type="submit" class="btn btn-success">
+                  <i class="fas fa-save"></i> Enregistrer le Document
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  function updateRemoveButtons() {
+    const rows = document.querySelectorAll(".state-row");
+    rows.forEach(row => {
+      const btn = row.querySelector(".remove-state");
+      if (rows.length === 1) {
+        btn.style.display = "none";
+      } else {
+        btn.style.display = "inline-block";
       }
+    });
+  }
 
-      h1 {
-        text-align: center;
-        color: #2c3e50;
-        margin-bottom: 30px;
+  function updateSubStatesVisibility(row) {
+    const typeSelect = row.querySelector(".state-type");
+    const subStates = row.querySelector(".sub-states-container");
+    if (typeSelect.value === "BRK") {
+      subStates.style.display = "";
+    } else {
+      subStates.style.display = "none";
+      subStates.querySelectorAll("input[type=checkbox]").forEach(cb => cb.checked = false);
+    }
+  }
+
+  document.getElementById("add-state-btn").addEventListener("click", function () {
+    const container = document.getElementById("states-container");
+    const index = container.querySelectorAll(".state-row").length;
+    const firstRow = container.querySelector(".state-row");
+    const newRow = firstRow.cloneNode(true);
+
+    // Reset inputs
+    newRow.querySelectorAll("input, select").forEach(el => {
+      if (el.tagName === "SELECT") {
+        el.value = "";
+      } else if (el.type === "checkbox") {
+        el.checked = false;
+      } else {
+        el.value = "";
       }
+    });
 
-      form {
-        background-color: #ffffff;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        max-width: 500px;
-        margin: 0 auto;
-      }
+    // Update sub_state names
+    newRow.querySelectorAll(".sub-states-container input[type=checkbox]").forEach(cb => {
+      const baseName = cb.name.split("_")[0];
+      cb.name = baseName + "_" + index;
+    });
 
-      label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: #34495e;
-        font-size: 14px;
-      }
+    container.appendChild(newRow);
+    updateRemoveButtons();
+    updateSubStatesVisibility(newRow);
+  });
 
-      input[type="text"] {
-        width: 100%;
-        padding: 12px;
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 15px;
-        box-sizing: border-box;
-        transition: border-color 0.3s;
-      }
+  document.getElementById("states-container").addEventListener("click", function (e) {
+    if (e.target.closest(".remove-state")) {
+      e.target.closest(".state-row").remove();
+      updateRemoveButtons();
+    }
+  });
 
-      input[type="text"]:focus {
-        border-color: #28a745;
-        outline: none;
-      }
+  document.getElementById("states-container").addEventListener("change", function (e) {
+    if (e.target.classList.contains("state-type")) {
+      updateSubStatesVisibility(e.target.closest(".state-row"));
+    }
+  });
 
-      button[type="submit"] {
-        background-color: #28a745;
-        color: white;
-        padding: 12px 20px;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        width: 100%;
-        transition: background-color 0.3s ease;
-      }
-
-      button[type="submit"]:hover {
-        background-color: #218838;
-      }
-
-      .back-link {
-        display: block;
-        text-align: center;
-        margin-top: 20px;
-        padding: 10px 15px;
-        background-color: #7f8c8d;
-        color: white;
-        text-decoration: none;
-        border-radius: 6px;
-        max-width: 200px;
-        margin-left: auto;
-        margin-right: auto;
-        transition: background-color 0.3s ease;
-      }
-
-      .back-link:hover {
-        background-color: #5a6268;
-      }
-
-      @media (max-width: 600px) {
-        form {
-          padding: 20px;
-        }
-
-        button[type="submit"],
-        .back-link {
-          font-size: 15px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Add New Document</h1>
-
-    <form method="POST">
-      <label for="numero_dossier">Numéro Dossier</label>
-      <input type="text" id="numero_dossier" name="numero_dossier" required />
-
-      <label for="numero_carton">Numéro Carton</label>
-      <input type="text" id="numero_carton" name="numero_carton" required />
-
-      <label for="modele">Modèle</label>
-      <input type="text" id="modele" name="modele" required />
-
-      <label for="state">État</label>
-      <input type="text" id="state" name="state" required />
-
-      <button type="submit">Add Document</button>
-    </form>
-
-    <a href="{{ url_for('index') }}" class="back-link">← Back to List</a>
-  </body>
-</html>
+  // Init
+  document.querySelectorAll(".state-row").forEach(row => updateSubStatesVisibility(row));
+  updateRemoveButtons();
+});
+</script>
+{% endblock %}

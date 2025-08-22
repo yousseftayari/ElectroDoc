@@ -1,15 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-  <title>ElectroDoc - Print Document #{{ doc.id }}</title>
+  <meta charset="UTF-8">
+  <title>ElectroDoc - Impression Document #{{ doc.id }}</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .print-header { text-align: center; margin-bottom: 20px; }
-    .print-details { margin: 20px 0; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    th { background-color: #f2f2f2; }
-    .print-footer { margin-top: 30px; text-align: right; font-size: 0.8em; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      font-size: 14px;
+      color: #333;
+    }
+    .print-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .print-header h1 {
+      margin: 0;
+      font-size: 28px;
+      color: #16346c;
+    }
+    .print-header h2 {
+      margin: 5px 0 0;
+      font-size: 20px;
+      color: #555;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    .print-footer {
+      margin-top: 30px;
+      text-align: right;
+      font-size: 0.85em;
+      color: #777;
+    }
   </style>
 </head>
 <body>
@@ -33,14 +67,30 @@
         <td>{{ doc.modele }}</td>
       </tr>
       <tr>
-        <th>État</th>
-        <td>{{ doc.etat }}</td>
+        <th>États</th>
+        <td>
+          {% if doc.states %}
+            <ul style="margin:0; padding-left: 20px;">
+              {% for state in doc.states %}
+                <li>
+                  {{ state.state_type }} — {{ state.quantity }} pièce(s)
+                  {% set sub_states = state.get_sub_states() %}
+                  {% if sub_states %}
+                    ({{ sub_states|join(', ') }})
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            Aucun état enregistré
+          {% endif %}
+        </td>
       </tr>
     </table>
   </div>
   
   <div class="print-footer">
-    Printed on {{ now.strftime('%Y-%m-%d %H:%M') }}
+    Imprimé le {{ now.strftime('%Y-%m-%d %H:%M') }}
   </div>
 
   <script>
@@ -48,7 +98,7 @@
       window.print();
       setTimeout(function() {
         window.close();
-      }, 1000);
+      }, 500);
     };
   </script>
 </body>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Dossiers</title>
+</head>
+<body>
+    <h1>Choisissez un dossier</h1>
+    <ul>
+        {% for dossier in dossiers %}
+            <li>
+                <a href="{{ url_for('list_cartons', dossier_id=dossier.id) }}">
+                    Dossier n°{{ dossier.numero_dossier }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

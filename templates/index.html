@@ -1,404 +1,254 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ElectroDoc - Gestion des Documents</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ElectroDoc - Tableau de bord</title>
+
+  <!-- Bootstrap 5 CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- FontAwesome CDN -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
   <style>
-    :root {
-      --primary: #2c3e50;
-      --secondary: #3498db;
-      --accent: #e74c3c;
-      --success: #2ecc71;
-      --warning: #f39c12;
-      --light: #ecf0f1;
-      --dark: #2c3e50;
-      --text: #333;
-      --bg-gradient: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
-    }
-
     body {
+      background: #f8f9fa;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f7fa;
-      color: var(--text);
-      line-height: 1.6;
+      padding: 20px;
     }
-
-    .header {
-      background: var(--bg-gradient);
-      color: white;
-      padding: 1rem 0;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .header::after {
-      content: "";
-      background: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center/cover;
-      opacity: 0.2;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 0;
-    }
-
-    .header-content {
-      position: relative;
-      z-index: 1;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-    }
-
-    .logo i {
-      font-size: 2.5rem;
-      margin-right: 15px;
-      color: #f39c12;
-    }
-
-    .logo-text {
-      font-size: 2rem;
+    .header-title {
       font-weight: 700;
+      color: #0d6efd;
     }
-
-    .logo-subtext {
-      font-size: 1rem;
-      opacity: 0.8;
-      margin-top: 5px;
+    .header-subtitle {
+      color: #6c757d;
+      margin-bottom: 40px;
     }
-
-    .container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 20px;
+    .input-group .form-control {
+      border-start-start-radius: 0;
+      border-start-end-radius: 0;
     }
-
-    .add-button {
-      display: inline-flex;
-      align-items: center;
-      padding: 12px 24px;
-      background-color: var(--success);
-      color: white;
-      text-decoration: none;
-      border-radius: 50px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      margin-bottom: 2rem;
+    .input-group-text {
+      background: white;
+      border-right: 0;
+      color: #6c757d;
     }
-
-    .add-button i {
-      margin-right: 8px;
-    }
-
-    .add-button:hover {
-      background-color: #27ae60;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .card {
-      background-color: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-      overflow: hidden;
-      margin-bottom: 2rem;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 15px;
-      text-align: left;
-      border-bottom: 1px solid #eee;
-    }
-
-    th {
-      background-color: var(--primary);
-      color: white;
+    .btn-primary {
       font-weight: 600;
-      text-transform: uppercase;
-      font-size: 0.85rem;
-      letter-spacing: 0.5px;
     }
-
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-
-    tr:hover {
-      background-color: #f1f7fd;
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .actions a, .actions button {
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-    }
-
-    .actions a i, .actions button i {
-      margin-right: 5px;
-    }
-
-    .edit-link {
-      background-color: var(--warning);
-      color: white;
-    }
-
-    .edit-link:hover {
-      background-color: #e67e22;
-    }
-
-    .delete-button {
-      background-color: var(--accent);
-      color: white;
-    }
-
-    .delete-button:hover {
-      background-color: #c0392b;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 50px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .status-active {
-      background-color: #d5f5e3;
-      color: #27ae60;
-    }
-
-    .status-archived {
-      background-color: #ebf5fb;
-      color: #2980b9;
-    }
-
-    .status-pending {
-      background-color: #fef9e7;
-      color: #f39c12;
-    }
-
-    .empty-state {
+    .stats-card {
+      border-radius: 1rem;
+      box-shadow: 0 0.25rem 0.5rem rgba(13, 110, 253, 0.15);
+      padding: 30px 0;
       text-align: center;
-      padding: 3rem;
-      color: #7f8c8d;
+      background: white;
     }
-
-    .empty-state i {
+    .stats-card i {
       font-size: 3rem;
-      margin-bottom: 1rem;
-      color: #bdc3c7;
+      margin-bottom: 10px;
     }
-
-    .footer {
-      text-align: center;
-      padding: 2rem 0;
-      background-color: var(--primary);
-      color: white;
-      margin-top: 3rem;
+    .stats-card h3 {
+      font-weight: 700;
+      margin-bottom: 5px;
     }
-
-    .state-selectors {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 5px;
+    .stats-card p {
+      color: #6c757d;
+      font-size: 1.1rem;
     }
-
-    .carte_principale, .sous_options_brk {
-      padding: 6px 10px;
-      border-radius: 4px;
-      border: 1px solid #ddd;
+    .table thead {
+      background-color: #e9ecef;
+    }
+    .table-hover tbody tr:hover {
+      background-color: #f1f3f5;
+    }
+    .badge {
+      font-weight: 600;
+    }
+    .btn-outline-primary, .btn-outline-danger {
+      padding: 0.25rem 0.5rem;
       font-size: 0.85rem;
-      background-color: white;
-      transition: all 0.2s;
     }
-
-    .carte_principale:focus, .sous_options_brk:focus {
-      outline: none;
-      border-color: var(--secondary);
-      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    .pagination .page-link {
+      color: #0d6efd;
     }
-
-    @media (max-width: 768px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
-      }
-
-      thead {
-        display: none;
-      }
-
-      tr {
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 10px;
-        background-color: #fff;
-      }
-
-      td {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px 0;
-        font-size: 0.9rem;
-        border-bottom: none;
-      }
-
-      td::before {
-        content: attr(data-label);
-        font-weight: bold;
-        flex: 1;
-        color: var(--primary);
-      }
-
-      .actions {
-        justify-content: flex-end;
-      }
-
-      .state-selectors {
-        flex-direction: column;
-      }
-    }
-
-    .circuit-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="none" stroke="%23ecf0f1" stroke-width="0.5"/></svg>');
-      background-size: 50px 50px;
-      opacity: 0.05;
-      z-index: -1;
-      pointer-events: none;
+    .pagination .page-item.active .page-link {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+      color: white;
+      font-weight: 700;
     }
   </style>
 </head>
 <body>
-  <div class="circuit-bg"></div>
-  
-  <header class="header">
-    <div class="header-content">
-      <div class="logo">
-        <i class="fas fa-microchip"></i>
-        <div>
-          <div class="logo-text">ElectroDoc</div>
-          <div class="logo-subtext">Gestion des Documents Électroniques</div>
-        </div>
+
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="mb-4">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show shadow-sm" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
       </div>
-    </div>
-  </header>
-
-  <div class="container">
-    <a href="{{ url_for('add_document') }}" class="add-button">
-      <i class="fas fa-plus"></i> Add new Document
-    </a>
-
-    {% if documents %}
-    <div class="card">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Numéro Dossier</th>
-            <th>Numéro Carton</th>
-            <th>Modèle</th>
-            <th>État</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for doc in documents %}
-          <tr>
-            <td data-label="ID">{{ doc.id }}</td>
-            <td data-label="Numéro Dossier">{{ doc.numero_dossier }}</td>
-            <td data-label="Numéro Carton">{{ doc.numero_carton }}</td>
-            <td data-label="Modèle">{{ doc.modele }}</td>
-            <td data-label="État">
-              <div class="state-selectors">
-                <select class="carte_principale" onchange="toggleSousOptions(this)">
-                  <option value="">-- Choisir --</option>
-                  <option value="REP">REP</option>
-                  <option value="HS">HS</option>
-                  <option value="SWA">SWA</option>
-                  <option value="BRK">BRK</option>
-                </select>
-                <select class="sous_options_brk" style="display: none;">
-                  <option value="KC">KC</option>
-                  <option value="Ill">Ill</option>
-                </select>
-              </div>
-            </td>
-            <td data-label="Actions" class="actions">
-              <a href="{{ url_for('edit_document', id=doc.id) }}" class="edit-link">
-                <i class="fas fa-edit"></i> Edit
-              </a>
-              <form action="{{ url_for('delete_document', id=doc.id) }}" method="POST" class="delete-form" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce document?');">
-                <button type="submit" class="delete-button">
-                  <i class="fas fa-trash-alt"></i> Delete
-                </button>
-              </form>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% else %}
-    <div class="empty-state">
-      <i class="fas fa-folder-open"></i>
-      <h3>Aucun document trouvé</h3>
-      <p>Commencez par ajouter un nouveau document</p>
-    </div>
     {% endif %}
+  {% endwith %}
+
+  <!-- Header Section -->
+  <div class="text-center mb-5">
+    <h1 class="header-title">
+      <i class="fas fa-microchip me-2"></i>Gestion des Documents Électroniques
+    </h1>
+    <p class="header-subtitle">Système de gestion des dossiers, cartons et modèles</p>
   </div>
 
-  <footer class="footer">
-    <p>ElectroDoc &copy; 2025 - Système de Gestion des Documents Électroniques</p>
-  </footer>
+  <!-- Search and Actions -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+    <form method="GET" action="{{ url_for('dashboard') }}" class="flex-grow-1">
+      <div class="input-group shadow-sm rounded">
+        <span class="input-group-text bg-white border-end-0">
+          <i class="fas fa-search text-secondary"></i>
+        </span>
+        <input type="text" name="search" value="{{ search }}" class="form-control border-start-0" placeholder="Rechercher par dossier, carton ou modèle..." />
+        <button type="submit" class="btn btn-primary fw-semibold">Rechercher</button>
+      </div>
+    </form>
+    <a href="{{ url_for('add_document') }}" class="btn btn-success btn-lg shadow-sm">
+      <i class="fas fa-plus me-1"></i> Nouveau Document
+    </a>
+  </div>
 
-  <script>
-    function toggleSousOptions(selectElement) {
-      const sousOptions = selectElement.parentElement.querySelector(".sous_options_brk");
-      if (selectElement.value === "BRK") {
-        sousOptions.style.display = "inline-block";
-      } else {
-        sousOptions.style.display = "none";
-      }
-    }
-  </script>
+  <!-- Statistics Cards -->
+  <div class="row g-4 mb-5 text-center">
+    {% set stats = [
+      {'icon': 'folder', 'count': documents.total if documents.total else 0, 'label': 'Documents', 'color': 'primary'},
+      {'icon': 'boxes', 'count': documents.items|length if documents.items else 0, 'label': 'Cartons', 'color': 'success'},
+      {'icon': 'microchip', 'count': documents.items|length if documents.items else 0, 'label': 'Modèles', 'color': 'info'},
+      {'icon': 'chart-bar', 'count': documents.items|length if documents.items else 0, 'label': 'États', 'color': 'warning'}
+    ] %}
+    {% for stat in stats %}
+    <div class="col-6 col-md-3">
+      <div class="stats-card">
+        <i class="fas fa-{{ stat.icon }} text-{{ stat.color }}"></i>
+        <h3>{{ stat.count }}</h3>
+        <p>{{ stat.label }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Documents Table -->
+  <div class="card shadow-sm rounded-3">
+    <div class="card-header bg-white border-0 d-flex align-items-center justify-content-between">
+      <h5 class="mb-0 fw-bold text-primary">
+        <i class="fas fa-list me-2"></i> Liste des Documents
+      </h5>
+    </div>
+    <div class="card-body p-0">
+      {% if documents.items %}
+        <div class="table-responsive">
+          <table class="table table-striped table-hover mb-0 align-middle">
+            <thead class="table-light text-secondary">
+              <tr>
+                <th>ID</th>
+                <th>Numéro Dossier</th>
+                <th>Numéro Carton</th>
+                <th>Modèle</th>
+                <th>États</th>
+                <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for document in documents.items %}
+              <tr>
+                <td class="fw-semibold">{{ document.id }}</td>
+                <td><span class="badge bg-primary">{{ document.numero_dossier }}</span></td>
+                <td><span class="badge bg-secondary">{{ document.numero_carton }}</span></td>
+                <td>{{ document.modele }}</td>
+                <td>
+                  {% for state in document.states %}
+                    <span class="badge bg-{{
+                      'success' if state.state_type == 'REP' else
+                      'warning' if state.state_type == 'HS' else
+                      'info' if state.state_type == 'SWA' else
+                      'danger'
+                    }} me-1">
+                      {{ state.state_type }}
+                      {% if state.get_sub_states() %}
+                        [{{ state.sub_state }}]
+                      {% endif %}
+                      {% if state.quantity and state.quantity > 1 %}
+                        ({{ state.quantity }})
+                      {% endif %}
+                    </span>
+                  {% endfor %}
+                </td>
+                <td class="text-center">
+                  <div class="btn-group" role="group">
+                    <a href="{{ url_for('edit_document', id=document.id) }}" class="btn btn-sm btn-outline-primary" title="Modifier">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <form method="POST" action="{{ url_for('delete_document', id=document.id) }}" onsubmit="return confirm('Supprimer ce document ?');" style="display:inline;">
+                      <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if documents.pages > 1 %}
+          <nav aria-label="Pagination des documents" class="mt-3">
+            <ul class="pagination justify-content-center mb-3">
+              {% if documents.has_prev %}
+                <li class="page-item">
+                  <a class="page-link" href="{{ url_for('dashboard', page=documents.prev_num, search=search) }}">
+                    <i class="fas fa-chevron-left"></i> Précédent
+                  </a>
+                </li>
+              {% endif %}
+              {% for page_num in documents.iter_pages() %}
+                {% if page_num %}
+                  <li class="page-item {{ 'active' if page_num == documents.page else '' }}">
+                    <a class="page-link" href="{{ url_for('dashboard', page=page_num, search=search) }}">{{ page_num }}</a>
+                  </li>
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+              {% endfor %}
+              {% if documents.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="{{ url_for('dashboard', page=documents.next_num, search=search) }}">
+                    Suivant <i class="fas fa-chevron-right"></i>
+                  </a>
+                </li>
+              {% endif %}
+            </ul>
+          </nav>
+        {% endif %}
+
+      {% else %}
+        <div class="text-center py-5">
+          <i class="fas fa-folder-open fa-4x text-muted mb-4"></i>
+          <h4 class="text-muted mb-2">Aucun document trouvé</h4>
+          <p class="text-muted mb-4">Commencez par ajouter votre premier document.</p>
+          <a href="{{ url_for('add_document') }}" class="btn btn-primary btn-lg shadow-sm">
+            <i class="fas fa-plus me-2"></i> Ajouter un document
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
